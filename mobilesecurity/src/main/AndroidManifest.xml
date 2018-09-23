@@ -1,0 +1,27 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="android.thakur.com.mobilesecurity" >
+
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+
+    <application>
+        <service android:name=".services.backgroundservices.BackgroundService"
+                 android:enabled="true"
+                 android:exported="false"/>
+
+        <service android:name=".services.backgroundservices.LocationBackgroundService"
+                 android:enabled="true"
+                 android:exported="false"/>
+
+        <service android:name=".services.jobs.JobSchedulerService"
+                 android:exported="false"
+                 android:enabled="true"
+                 android:permission="android.permission.BIND_JOB_SERVICE"/>
+
+        <service android:name=".services.jobs.NetworkJobService"
+                 android:exported="false"
+                 android:enabled="true"
+                 android:permission="android.permission.BIND_JOB_SERVICE"/>
+    </application>
+</manifest>
