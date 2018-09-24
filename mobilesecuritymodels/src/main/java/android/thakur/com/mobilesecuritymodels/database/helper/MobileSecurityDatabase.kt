@@ -21,6 +21,7 @@ abstract class MobileSecurityDatabase : RoomDatabase() {
 
     companion object : SingletonHolder<MobileSecurityDatabase, Context>({
 
+
         Room.databaseBuilder(it, MobileSecurityDatabase::class.java, DB_NAME)
                 .addCallback(object: RoomDatabase.Callback() {
                     override fun onCreate(db: SupportSQLiteDatabase){

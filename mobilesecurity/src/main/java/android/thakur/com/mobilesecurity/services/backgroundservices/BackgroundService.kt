@@ -4,6 +4,7 @@ import android.app.IntentService
 import android.content.Intent
 import android.thakur.com.mobilesecurity.database.helper.MobileSecurityDatabase
 import android.thakur.com.mobilesecurity.loggerUtil.Logger
+import android.thakur.com.mobilesecurity.services.Services
 import kotlinx.coroutines.experimental.Dispatchers
 import kotlinx.coroutines.experimental.launch
 import kotlinx.coroutines.experimental.runBlocking
@@ -21,7 +22,7 @@ internal enum class EVENT_TYPE(val value: Int){
 }
 internal class BackgroundService:IntentService("BackgroundService") {
 
-    val logger = Logger(this)
+    val logger = Logger()
 
     override fun onCreate() {
         logger.log("background service created")
@@ -51,10 +52,12 @@ internal class BackgroundService:IntentService("BackgroundService") {
 
     fun startScheduled(){
         logger.log("start scheduled event")
+        Services.sharedInstance.startJob(null, null)
     }
 
     fun startNetworkChange(){
         logger.log("start network change event ")
+        Services.sharedInstance.startJob(null, null)
 
         runBlocking(block = {
             launch(Dispatchers.Default) {

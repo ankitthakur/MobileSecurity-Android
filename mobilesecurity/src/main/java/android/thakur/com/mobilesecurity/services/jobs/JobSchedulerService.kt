@@ -10,30 +10,36 @@ import android.thakur.com.mobilesecurity.services.backgroundservices.EVENT_TYPE
 
 internal class JobSchedulerService:JobService() {
 
-    var logger: Logger = Logger(this)
+    var logger:Logger? = null
 
     override fun onStartJob(params: JobParameters?): Boolean {
 
-        logger.log(logInfo = "onStartJob: $params")
+        if (logger == null)logger = Logger()
+        logger!!.log(logInfo = "JobSchedulerService: onStartJob: $params")
 
-        if (params!!.jobId == EVENT_TYPE.LOCATION_CHANGE.value){
+        if (params!!.jobId == EVENT_TYPE.LOCATION_CHANGE.value) {
             val intent = Intent(this, BackgroundService::class.java)
-            intent.putExtra("eventType", EVENT_TYPE.LOCATION_CHANGE.value)
+            intent.putExtra("JobSchedulerService: eventType", EVENT_TYPE.LOCATION_CHANGE.value)
             // this will call BackgroundService onHandle fun
             startService(intent)
         }
-
         return true
     }
 
     override fun onStopJob(params: JobParameters?): Boolean {
 
-        logger.log(logInfo = "onStopJob: $params")
+
+        if (logger == null)logger = Logger()
+        logger!!.log(logInfo = "JobSchedulerService: onStopJob: $params")
+
+
         return true
     }
 
     override fun onLowMemory() {
-        logger.log(logInfo = "low memory trigged")
+
+        var logger: Logger = Logger()
+        logger.log(logInfo = "JobSchedulerService: low memory trigged")
         super.onLowMemory()
     }
 }

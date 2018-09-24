@@ -22,7 +22,7 @@ class LocationBackgroundService:Service() {
     private lateinit var networkLocationListener:LocationListener
     private lateinit var gpsLocationListener:LocationListener
     private var locationManager: LocationManager? = null
-    private  val logger = Logger(this)
+    private  val logger = Logger()
 
 
 
