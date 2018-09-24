@@ -36,7 +36,7 @@ internal class ScheduleJob {
         if (activity != null) this.appActivity = activity
 
 
-        logger = Logger()
+        logger = Logger(this.appContext)
 
         if (checkPermissions(context)){
             startLocationService(appContext)

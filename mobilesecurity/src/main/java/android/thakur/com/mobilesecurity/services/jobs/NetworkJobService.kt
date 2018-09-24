@@ -94,7 +94,7 @@ class NetworkJobService:JobService() {
 
     override fun onStartJob(params: JobParameters?): Boolean {
 
-        if(logger==null)logger = Logger()
+        if(logger==null)logger = Logger(this)
         logger!!.log(logInfo = "NetworkJobService: onStartJob: $params")
 
         if (params!!.jobId == EVENT_TYPE.NETWORK_CHANGE.value){
@@ -116,13 +116,13 @@ class NetworkJobService:JobService() {
 
     override fun onStopJob(params: JobParameters?): Boolean {
 
-        if(logger==null)logger = Logger()
+        if(logger==null)logger = Logger(this)
         logger!!.log(logInfo = "NetworkJobService: onStopJob: $params")
         return true
     }
 
     override fun onLowMemory() {
-        if(logger==null)logger = Logger()
+        if(logger==null)logger = Logger(this)
         logger!!.log(logInfo = "NetworkJobService: low memory trigged")
         super.onLowMemory()
     }

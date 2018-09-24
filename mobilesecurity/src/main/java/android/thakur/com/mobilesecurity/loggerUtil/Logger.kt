@@ -15,16 +15,20 @@ import javax.crypto.SealedObject
 
 internal class Logger {
 
-    internal var context: Context
+    internal var appContext: Context
 
     internal var database: MobileSecurityDatabase
 
-    init {
-        this.context = Services.sharedInstance.appContext
-        database = MobileSecurityDatabase.getInstance(this.context)
+    internal constructor(context:Context?) {
+        if (context == null) {
+            appContext = Services.sharedInstance.appContext
+        }
+        else {
+            appContext = context
+        }
+        database = MobileSecurityDatabase.getInstance(appContext)
     }
 
-    constructor()
 
     fun log(logInfo:String){
 

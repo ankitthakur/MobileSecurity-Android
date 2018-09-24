@@ -7,14 +7,16 @@ import android.thakur.com.mobilesecurity.loggerUtil.Logger
 import android.thakur.com.mobilesecurity.services.backgroundservices.BackgroundService
 import android.thakur.com.mobilesecurity.services.backgroundservices.EVENT_TRIGGER
 import android.thakur.com.mobilesecurity.services.backgroundservices.EVENT_TYPE
+import android.util.Log
 
 internal class JobSchedulerService:JobService() {
 
     var logger:Logger? = null
 
     override fun onStartJob(params: JobParameters?): Boolean {
+        Log.w("TAG","JobSchedulerService: onStartJob: $params context:$this")
 
-        if (logger == null)logger = Logger()
+        if (logger == null)logger = Logger(this)
         logger!!.log(logInfo = "JobSchedulerService: onStartJob: $params")
 
         if (params!!.jobId == EVENT_TYPE.LOCATION_CHANGE.value) {
@@ -28,8 +30,9 @@ internal class JobSchedulerService:JobService() {
 
     override fun onStopJob(params: JobParameters?): Boolean {
 
+        Log.w("TAG","JobSchedulerService: onStopJob: $params context:$this")
 
-        if (logger == null)logger = Logger()
+        if (logger == null)logger = Logger(this)
         logger!!.log(logInfo = "JobSchedulerService: onStopJob: $params")
 
 
@@ -38,7 +41,7 @@ internal class JobSchedulerService:JobService() {
 
     override fun onLowMemory() {
 
-        var logger: Logger = Logger()
+        var logger: Logger = Logger(this)
         logger.log(logInfo = "JobSchedulerService: low memory trigged")
         super.onLowMemory()
     }

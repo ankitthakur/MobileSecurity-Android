@@ -30,7 +30,7 @@ internal class UserLocationManager {
 
     fun initialize(activity:Activity, context: Context) {
         this.appActivity = activity
-        logger = Logger()
+        logger = Logger(context)
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(appActivity)
     }
 

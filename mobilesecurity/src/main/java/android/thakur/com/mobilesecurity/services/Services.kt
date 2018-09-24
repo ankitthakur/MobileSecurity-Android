@@ -34,7 +34,7 @@ internal class Services private constructor(){
         if (context != null) this.appContext = context
         if (activity != null) this.appActivity = activity
 
-        logger = Logger()
+        logger = Logger(this.appContext)
 
         scheduleJob = ScheduleJob()
         scheduleJob.scheduleJob(this.appContext, this.appActivity)

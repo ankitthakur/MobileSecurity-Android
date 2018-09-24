@@ -15,7 +15,7 @@ internal class JobsReciever:BroadcastReceiver() {
     private lateinit var logger:Logger
 
     override fun onReceive(context: Context?, intent: Intent?) {
-        logger = Logger()
+        logger = Logger(context!!)
         logger.log("recieved broadcast")
         val intent = Intent(context, BackgroundService::class.java)
         intent.putExtra("eventType", EVENT_TYPE.REBOOTED.value)
