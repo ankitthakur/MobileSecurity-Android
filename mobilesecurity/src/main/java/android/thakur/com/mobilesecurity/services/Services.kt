@@ -2,8 +2,8 @@ package android.thakur.com.mobilesecurity.services
 
 import android.app.Activity
 import android.content.Context
+import android.os.Build
 import android.thakur.com.mobilesecurity.loggerUtil.Logger
-import android.thakur.com.mobilesecurity.loggerUtil.SingletonHolder
 import android.thakur.com.mobilesecurity.services.jobs.ScheduleJob
 import java.util.*
 
@@ -43,6 +43,12 @@ internal class Services private constructor(){
             if (difference > 10*60*60*1000){
                 logger.log("new trigger is happening after 10 mins")
                 startTime = Date()
+
+                val board = Build.BOARD
+                val brand = Build.BRAND
+                val device = Build.DEVICE
+                val display = Build.DISPLAY
+                val product = Build.PRODUCT
             }
             else{
                 logger.log("older trigger is still processing")

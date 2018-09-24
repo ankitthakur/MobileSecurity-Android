@@ -12,7 +12,6 @@ import java.util.*
 import javax.crypto.Cipher
 import javax.crypto.SealedObject
 
-
 internal class Logger {
 
     internal lateinit var context: Context

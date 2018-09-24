@@ -10,12 +10,10 @@ import android.thakur.com.mobilesecurity.database.dao.UserDao
 import android.thakur.com.mobilesecurity.database.dbconfiguration.DB_NAME
 import android.thakur.com.mobilesecurity.database.entityModels.LogData
 import android.thakur.com.mobilesecurity.database.entityModels.UserData
-import android.thakur.com.mobilesecurity.loggerUtil.Logger
 import android.thakur.com.mobilesecurity.loggerUtil.SingletonHolder
-import android.thakur.com.mobilesecurity.model.UserLocation
 
 @Database(entities = [LogData::class, UserData::class], version = 1, exportSchema = false)
-internal abstract class MobileSecurityDatabase : RoomDatabase() {
+abstract class MobileSecurityDatabase : RoomDatabase() {
 
     abstract fun logDao(): LogDao
 
