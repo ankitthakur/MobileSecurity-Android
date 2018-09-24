@@ -36,7 +36,7 @@ internal class Logger {
             launch(Dispatchers.Default){
                 val logTime = Date().time
                 val cipher:Cipher = Utils.generateCipher(logTime)
-                val sealedObject = SealedObject(appId!! + " : " + logInfo, cipher)
+                val sealedObject = SealedObject(appId + " : " + logInfo, cipher)
 
                 Log.w("logger", appId!! + " : " + logInfo)
                 val byteArray = Utils.sealedObjectStream(sealedObject)

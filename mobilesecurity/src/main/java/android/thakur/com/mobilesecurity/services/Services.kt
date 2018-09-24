@@ -45,6 +45,7 @@ internal class Services private constructor(){
         if (context != null) this.appContext = context
         if (activity != null) this.appContext = activity
 
+        if (logger == null)logger = Logger(this.appContext)
         if (this.startTime != null){
             val difference = Date().time - startTime!!.time
 

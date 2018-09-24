@@ -103,7 +103,7 @@ class NetworkJobService:JobService() {
             // this will call BackgroundService onHandle fun
             startService(intent)
         }
-
+        context = this@NetworkJobService.applicationContext
         if (context == null){
             context = Services.sharedInstance.appContext
         }

@@ -27,7 +27,7 @@ import android.thakur.com.mobilesecurity.services.Services
  *
  *
  */
-internal var appId:String? = null
+internal var appId:String = "unknown"
 
 class MobileSecurity {
 
