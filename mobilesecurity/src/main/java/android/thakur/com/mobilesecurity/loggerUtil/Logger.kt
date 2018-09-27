@@ -19,13 +19,8 @@ internal class Logger {
 
     internal var database: MobileSecurityDatabase
 
-    internal constructor(context:Context?) {
-        if (context == null) {
-            appContext = Services.sharedInstance.appContext
-        }
-        else {
-            appContext = context
-        }
+    internal constructor(context:Context) {
+        appContext = context
         database = MobileSecurityDatabase.getInstance(appContext)
     }
 

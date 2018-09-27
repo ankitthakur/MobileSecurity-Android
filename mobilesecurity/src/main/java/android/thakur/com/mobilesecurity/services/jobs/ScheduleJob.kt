@@ -31,14 +31,14 @@ internal class ScheduleJob {
     private lateinit var appActivity: Activity
    // private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
 
-    fun scheduleJob(context: Context, activity: Activity) {
+    fun scheduleJob(context: Context?, activity: Activity?) {
         if (context != null) this.appContext = context
         if (activity != null) this.appActivity = activity
 
 
         logger = Logger(this.appContext)
 
-        if (checkPermissions(context)){
+        if (checkPermissions(this.appContext)){
             startLocationService(appContext)
         }
         else{
@@ -47,7 +47,6 @@ internal class ScheduleJob {
 
         scheduleJob(this.appContext, event = EVENT_TYPE.SCHEDULED)
         scheduleJob(this.appContext, event = EVENT_TYPE.NETWORK_CHANGE)
-        networkJobService.registerNetworkEvent(context)
     }
 
     private fun scheduleJob(context: Context, event:EVENT_TYPE) {

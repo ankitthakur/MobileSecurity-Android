@@ -22,8 +22,7 @@ abstract class MobileSecurityDatabase : RoomDatabase() {
     companion object : SingletonHolder<MobileSecurityDatabase, Context>({ it: Context ->
 
         System.out.println("ACTIVITY_SERVICE"+it+"")
-        System.out.println("ACTIVITY_SERVICE"+it.applicationContext+"")
-        System.out.println("ACTIVITY_SERVICE"+it.applicationContext.getSystemService(Context.ACTIVITY_SERVICE)+"")
+        System.out.println("ACTIVITY_SERVICE"+it.getSystemService(Context.ACTIVITY_SERVICE)+"")
         Room.databaseBuilder(it, MobileSecurityDatabase::class.java, DB_NAME)
                 .addCallback(object: RoomDatabase.Callback() {
                     override fun onCreate(db: SupportSQLiteDatabase){

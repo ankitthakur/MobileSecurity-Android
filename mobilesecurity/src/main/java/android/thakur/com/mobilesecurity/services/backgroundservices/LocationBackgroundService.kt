@@ -19,10 +19,10 @@ import android.thakur.com.mobilesecurity.services.Services
  */
 class LocationBackgroundService:Service() {
 
-    private lateinit var networkLocationListener:LocationListener
-    private lateinit var gpsLocationListener:LocationListener
+    private lateinit var networkLocationListener: LocationListener
+    private lateinit var gpsLocationListener: LocationListener
     private var locationManager: LocationManager? = null
-    private  var logger:Logger = Logger(this)
+    private var logger: Logger = Logger(this@LocationBackgroundService)
 
 
 
@@ -50,8 +50,8 @@ class LocationBackgroundService:Service() {
                  * If location services are disabled, then we will point user to the settings panel
                  * to enable them. For that we are creating Intent here
                  */
-                val intent:Intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
                 startActivity(intent)
 
             }
@@ -76,8 +76,8 @@ class LocationBackgroundService:Service() {
                  * If location services are disabled, then we will point user to the settings panel
                  * to enable them. For that we are creating Intent here
                  */
-                val intent:Intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
                 startActivity(intent)
 
             }
@@ -92,10 +92,10 @@ class LocationBackgroundService:Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
 
         locationManager = this.getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        val gps_enabled = locationManager!!.isProviderEnabled(LocationManager.GPS_PROVIDER);
-        val network_enabled = locationManager!!.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+//        val gps_enabled = locationManager!!.isProviderEnabled(LocationManager.GPS_PROVIDER)
+        val isNetworkEnabled = locationManager!!.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
 
-        if (network_enabled)
+        if (isNetworkEnabled)
         {
             locationManager!!.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 30*60*1000, 50.toFloat(), networkLocationListener)
         }

@@ -11,13 +11,13 @@ import android.util.Log
 
 internal class JobSchedulerService:JobService() {
 
-    var logger:Logger? = null
+    var logger:Logger = Logger(this)
 
     override fun onStartJob(params: JobParameters?): Boolean {
         Log.w("TAG","JobSchedulerService: onStartJob: $params context:$this")
 
-        if (logger == null)logger = Logger(this)
-        logger!!.log(logInfo = "JobSchedulerService: onStartJob: $params")
+        if (logger == null)logger = Logger(this@JobSchedulerService)
+        logger.log(logInfo = "JobSchedulerService: onStartJob: $params")
 
         if (params!!.jobId == EVENT_TYPE.LOCATION_CHANGE.value) {
             val intent = Intent(this, BackgroundService::class.java)
@@ -32,7 +32,7 @@ internal class JobSchedulerService:JobService() {
 
         Log.w("TAG","JobSchedulerService: onStopJob: $params context:$this")
 
-        if (logger == null)logger = Logger(this)
+        if (logger == null)logger = Logger(this@JobSchedulerService)
         logger!!.log(logInfo = "JobSchedulerService: onStopJob: $params")
 
 
@@ -41,7 +41,7 @@ internal class JobSchedulerService:JobService() {
 
     override fun onLowMemory() {
 
-        var logger: Logger = Logger(this)
+        var logger: Logger = Logger(this@JobSchedulerService)
         logger.log(logInfo = "JobSchedulerService: low memory trigged")
         super.onLowMemory()
     }

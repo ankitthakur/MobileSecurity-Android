@@ -22,7 +22,7 @@ internal enum class EVENT_TYPE(val value: Int){
 }
 internal class BackgroundService:IntentService("BackgroundService") {
 
-    val logger = Logger(this)
+    val logger = Logger(this@BackgroundService)
 
     override fun onCreate() {
         logger.log("background service created")
