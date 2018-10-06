@@ -22,7 +22,7 @@ class LocationBackgroundService:Service() {
     private lateinit var networkLocationListener: LocationListener
     private lateinit var gpsLocationListener: LocationListener
     private var locationManager: LocationManager? = null
-    private var logger: Logger = Logger(this@LocationBackgroundService)
+    private lateinit var logger: Logger
 
 
 
@@ -33,6 +33,8 @@ class LocationBackgroundService:Service() {
 
     override fun onCreate() {
         super.onCreate()
+
+        logger = Logger(this@LocationBackgroundService)
 
         networkLocationListener = object : LocationListener {
 

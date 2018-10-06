@@ -20,7 +20,7 @@ class UserLocation() {
     private var bearingAccuracyDegrees = 0.0f
 
     constructor(currentLocation: Location) : this() {
-        provider = currentLocation.provider
+        provider = currentLocation.provider as String
         time = currentLocation.time
         elapsedRealtimeNanos = currentLocation.elapsedRealtimeNanos
         latitude = currentLocation.latitude
@@ -39,7 +39,7 @@ class UserLocation() {
     }
 
     override fun toString(): String {
-        return "UserLocation(provider='$provider', time=$time, elapsedRealtimeNanos=$elapsedRealtimeNanos, latitude=$latitude, longitude=$longitude, altitude=$altitude, speed=$speed, bearing=$bearing, horizontalAccuracyMeters=$horizontalAccuracyMeters, verticalAccuracyMeters=$verticalAccuracyMeters, speedAccuracyMetersPerSecond=$speedAccuracyMetersPerSecond, bearingAccuracyDegrees=$bearingAccuracyDegrees)"
+        return "{\"location\":{\"provider\":$provider, \"time\":$time, \"elapsedRealtimeNanos\":$elapsedRealtimeNanos, \"latitude\":$latitude, \"longitude\":$longitude, \"altitude\":$altitude, \"speed\":$speed, \"bearing\":$bearing, \"horizontalAccuracyMeters\":$horizontalAccuracyMeters, \"verticalAccuracyMeters\":$verticalAccuracyMeters, \"speedAccuracyMetersPerSecond\":$speedAccuracyMetersPerSecond, \"bearingAccuracyDegrees\":$bearingAccuracyDegrees}"
     }
 
 

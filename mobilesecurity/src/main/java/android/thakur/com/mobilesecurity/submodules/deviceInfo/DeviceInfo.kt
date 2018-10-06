@@ -2,40 +2,50 @@ package android.thakur.com.mobilesecurity.submodules.deviceInfo
 
 import android.os.Build
 import android.os.Build.VERSION.RELEASE
-import java.io.DataInputStream
-import java.io.DataOutputStream
 
 
 class DeviceInfo {
 
-    val board = Build.BOARD
-    val brand = Build.BRAND
-    val device = Build.DEVICE
-    val display = Build.DISPLAY
-    val product = Build.PRODUCT
+    fun payload() : HashMap<String, Any>{
 
-    val  details =  "VERSION.RELEASE : "+ RELEASE +
-            "\nVERSION.INCREMENTAL : "+Build.VERSION.INCREMENTAL +
-            "\nVERSION.SDK.NUMBER : "+Build.VERSION.SDK_INT +
-            "\nBOARD : "+Build.BOARD +
-            "\nBOOTLOADER : "+Build.BOOTLOADER +
-            "\nBRAND : "+Build.BRAND +
-            "\nSUPPORTED_ABIS : "+Build.SUPPORTED_ABIS +
-            "\nDISPLAY : "+Build.DISPLAY +
-            "\nFINGERPRINT : "+Build.FINGERPRINT +
-            "\nHARDWARE : "+Build.HARDWARE +
-            "\nHOST : "+Build.HOST +
-            "\nID : "+Build.ID +
-            "\nMANUFACTURER : "+Build.MANUFACTURER +
-            "\nMODEL : "+Build.MODEL +
-            "\nPRODUCT : "+Build.PRODUCT +
-            "\nTAGS : "+Build.TAGS +
-            "\nTIME : "+Build.TIME +
-            "\nTYPE : "+Build.TYPE +
-            "\nUNKNOWN : "+Build.UNKNOWN + "\nUSER : "+Build.USER
+        val abis = arrayListOf<String>()
 
-    fun initialize() : String{
-        return ""
+        for (abi in Build.SUPPORTED_ABIS){
+            abis.add(abi)
+        }
+
+        val version = hashMapOf<String, String>(
+                "release" to RELEASE,
+                "incremental" to Build.VERSION.INCREMENTAL,
+                "sdkNumber" to Build.VERSION.SDK_INT.toString()
+        )
+
+        val data = hashMapOf<String, String>(
+                "board" to Build.BOARD,
+                "bootLoader" to Build.BOOTLOADER,
+                "brand" to Build.BRAND,
+                "supportedApis" to abis.toString(),
+                "display" to Build.DISPLAY,
+                "fingerprint" to Build.FINGERPRINT,
+                "hardware" to Build.HARDWARE,
+                "host" to Build.HOST,
+                "buildId" to Build.ID,
+                "manufacturer" to Build.MANUFACTURER,
+                "model" to Build.MODEL,
+                "product" to Build.PRODUCT,
+                "tags" to Build.TAGS,
+                "buildtime" to Build.TIME.toString(),
+                "buildtype" to Build.TYPE,
+                "unknown" to Build.UNKNOWN,
+                "user" to Build.USER
+                )
+
+        val responseData = hashMapOf<String, Any>(
+                "version" to version
+        )
+        responseData.putAll(data)
+
+        return responseData
 
     }
 

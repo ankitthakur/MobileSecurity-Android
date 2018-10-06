@@ -7,13 +7,12 @@ import android.content.Intent
 import android.net.*
 import android.net.wifi.WifiManager
 import android.thakur.com.mobilesecurity.loggerUtil.Logger
-import android.thakur.com.mobilesecurity.services.Services
 import android.thakur.com.mobilesecurity.services.backgroundservices.BackgroundService
 import android.thakur.com.mobilesecurity.services.backgroundservices.EVENT_TYPE
 
 class NetworkJobService:JobService() {
 
-    private var logger: Logger = Logger(this@NetworkJobService)
+    private lateinit var logger: Logger
     private val connectivityManager:ConnectivityManager by lazy { this.applicationContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager }
 
     private val wifiManager by lazy {
@@ -74,6 +73,10 @@ class NetworkJobService:JobService() {
         }
     }
 
+    override fun onCreate() {
+        logger = Logger(this@NetworkJobService)
+        super.onCreate()
+    }
     override fun onStartJob(params: JobParameters?): Boolean {
 
         logger.log(logInfo = "NetworkJobService: onStartJob: $params")

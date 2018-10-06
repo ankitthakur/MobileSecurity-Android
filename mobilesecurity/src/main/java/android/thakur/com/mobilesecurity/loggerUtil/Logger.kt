@@ -33,10 +33,11 @@ internal class Logger {
                 val cipher:Cipher = Utils.generateCipher(logTime)
                 val sealedObject = SealedObject(appId + " : " + logInfo, cipher)
 
-                Log.w("logger", appId!! + " : " + logInfo)
+                Log.w("logger", appId + " : " + logInfo)
                 val byteArray = Utils.sealedObjectStream(sealedObject)
                 if (byteArray != null)  {
                     val logData = LogData(logTime, byteArray)
+
                     database.logDao().insertLog(logData = logData)
                 }
             }

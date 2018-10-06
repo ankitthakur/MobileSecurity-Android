@@ -15,11 +15,15 @@ internal class JobsReciever:BroadcastReceiver() {
     private lateinit var logger:Logger
 
     override fun onReceive(context: Context?, intent: Intent?) {
-        logger = Logger(context!!)
-        logger.log("recieved broadcast")
-        val intent = Intent(context, BackgroundService::class.java)
-        intent.putExtra("eventType", EVENT_TYPE.REBOOTED.value)
-        // this will call BackgroundService onHandle fun
-         Services.sharedInstance.scheduleJob(null, null)
+
+        if ("android.intent.action.BOOT_COMPLETED".equals(intent?.getAction())) {
+            logger = Logger(context!!)
+            logger.log("recieved broadcast")
+            val intent = Intent(context, BackgroundService::class.java)
+            intent.putExtra("eventType", EVENT_TYPE.REBOOTED.value)
+            // this will call BackgroundService onHandle fun
+            Services.sharedInstance.scheduleJob(null, null)
+        }
+
     }
 }
