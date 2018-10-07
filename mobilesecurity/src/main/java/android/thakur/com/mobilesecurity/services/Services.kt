@@ -71,7 +71,7 @@ internal class Services private constructor(){
 
         this.appActivity.registerReceiver(BatteryReciever(), IntentFilter(Intent.ACTION_BATTERY_CHANGED))
 
-        if (logger == null)logger = Logger(this.appContext)
+        logger = Logger(this.appContext)
 
         if (this.startTime != null){
             val difference = Date().time - startTime!!.time
@@ -102,6 +102,7 @@ internal class Services private constructor(){
 
     fun endJob(module: MODULE, value:Any){
 
+        logger = Logger(this.appContext)
         if (module == MODULE.LOCATION){
             var userLocation = value as UserLocation
             var deviceInfo = DeviceInfo().payload()

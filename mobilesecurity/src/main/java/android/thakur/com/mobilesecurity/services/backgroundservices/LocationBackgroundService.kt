@@ -13,6 +13,8 @@ import android.provider.Settings
 import android.support.annotation.Nullable
 import android.thakur.com.mobilesecurity.loggerUtil.Logger
 import android.thakur.com.mobilesecurity.services.Services
+import android.util.Log
+import java.lang.Exception
 
 /**
  * Since location services are async, we cannot use IntentService, and so inheriting from Service
@@ -22,7 +24,8 @@ class LocationBackgroundService:Service() {
     private lateinit var networkLocationListener: LocationListener
     private lateinit var gpsLocationListener: LocationListener
     private var locationManager: LocationManager? = null
-    private lateinit var logger: Logger
+    private lateinit var logger:Logger
+    private lateinit var appContext: Context
 
 
 
@@ -34,7 +37,9 @@ class LocationBackgroundService:Service() {
     override fun onCreate() {
         super.onCreate()
 
-        logger = Logger(this@LocationBackgroundService)
+        this.appContext = this@LocationBackgroundService
+        logger = Logger(this.appContext)
+
 
         networkLocationListener = object : LocationListener {
 
@@ -119,8 +124,13 @@ class LocationBackgroundService:Service() {
     }
 
     fun startLocationChange(location: Location){
-        logger.log("start location change event:"+location.toString())
-        Services.sharedInstance.startJob(null, null)
+        try {
+            logger.log("start location change event:"+location.toString())
+            Services.sharedInstance.startJob(null, null)
+        }
+        catch (e:Exception){
+            Log.w("LocationService", "Location service failed to start")
+        }
     }
 
 

@@ -22,7 +22,7 @@ internal class JobsReciever:BroadcastReceiver() {
             val intent = Intent(context, BackgroundService::class.java)
             intent.putExtra("eventType", EVENT_TYPE.REBOOTED.value)
             // this will call BackgroundService onHandle fun
-            Services.sharedInstance.scheduleJob(null, null)
+            Services.sharedInstance.scheduleJob(context!!, null)
         }
 
     }
