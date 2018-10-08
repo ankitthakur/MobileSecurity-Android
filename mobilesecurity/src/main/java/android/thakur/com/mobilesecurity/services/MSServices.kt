@@ -113,7 +113,8 @@ internal class MSServices private constructor() {
                     logger.log("older trigger is still processing")
                 }
                 else{
-                    logger.log("older trigger happens in less than trigger duration : $difference/1000 secs ago")
+                    val lastDuration = difference/1000
+                    logger.log("older trigger happens in less than trigger duration : $difference secs ago")
                 }
             }
         } else {
@@ -184,8 +185,8 @@ internal class MSServices private constructor() {
 
     companion object {
         val sharedInstance: MSServices by lazy { Holder.instance }
-        const val lockDuration = 15 * 60 * 60 * 1000
-        const val triggerDuration = 10 * 60 * 60 * 1000
+        const val lockDuration = 15 * 60 * 1000
+        const val triggerDuration = 10 * 60 * 1000
     }
 
 
