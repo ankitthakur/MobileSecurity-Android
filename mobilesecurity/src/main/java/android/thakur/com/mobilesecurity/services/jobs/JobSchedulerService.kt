@@ -5,8 +5,9 @@ import android.app.job.JobService
 import android.content.Context
 import android.content.Intent
 import android.thakur.com.mobilesecurity.loggerUtil.Logger
-import android.thakur.com.mobilesecurity.services.backgroundservices.BackgroundService
-import android.thakur.com.mobilesecurity.services.backgroundservices.EVENT_TYPE
+//import android.thakur.com.mobilesecurity.services.backgroundservices.BackgroundService
+import android.thakur.com.mobilesecurity.services.EVENTTYPE
+import android.thakur.com.mobilesecurity.services.MSServices
 import android.util.Log
 
 internal class JobSchedulerService:JobService() {
@@ -26,11 +27,8 @@ internal class JobSchedulerService:JobService() {
         logger = Logger(this.appContext)
         logger.log(logInfo = "JobSchedulerService: onStartJob: $params")
 
-        if (params!!.jobId == EVENT_TYPE.LOCATION_CHANGE.value) {
-            val intent = Intent(this, BackgroundService::class.java)
-            intent.putExtra("JobSchedulerService: eventType", EVENT_TYPE.LOCATION_CHANGE.value)
-            // this will call BackgroundService onHandle fun
-            startService(intent)
+        if (params!!.jobId == EVENTTYPE.LOCATION_CHANGE.value) {
+            MSServices.sharedInstance.startJob(appContext, null)
         }
         return true
     }

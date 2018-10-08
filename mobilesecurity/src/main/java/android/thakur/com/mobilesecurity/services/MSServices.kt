@@ -21,30 +21,51 @@ import java.util.*
 import javax.crypto.Cipher
 import javax.crypto.SealedObject
 
-internal enum class MODULE(val value: Int){
+internal enum class MODULE(val value: Int) {
     LOCATION(5001),
     DEVICE_INFO(5002)
 }
-internal class Services private constructor(){
+
+internal enum class EVENTTRIGGER{
+    BACKGROUND, FOREGROUND
+}
+
+internal enum class EVENTTYPE(val value: Int){
+    SCHEDULED(4001),
+    NETWORK_CHANGE(4002),
+    LOCATION_CHANGE(4003),
+    LOCATION_VISIT(4004),
+    REBOOTED(4005)
+}
+
+internal class MSServices private constructor() {
 
     init {
         println("Singleton class invoked.")
     }
 
-    internal lateinit var appContext: Context
-    internal lateinit var appActivity: Activity
+    private lateinit var appContext: Context
+    private lateinit var appActivity: Activity
+    private lateinit var batteryReciever: BatteryReciever
+
     private var startTime: Date? = null
     private var endTime: Date? = null
-    private var isProcessStarted: Boolean = false
 
-    private var lockDuration = 15*60*60*1000
+    private var _isProcessStarted: Boolean = false
+    private var isProcessStarted: Boolean
+        get() = _isProcessStarted
+        set(value) {
+            _isProcessStarted = value
+        }
+
+
     private lateinit var logger: Logger
 
     private lateinit var batterInfo: HashMap<String, Any>
 
     private lateinit var scheduleJob: ScheduleJob
 
-    private var userLocationManager:UserLocationManager? = null
+    private var userLocationManager: UserLocationManager? = null
 
     private lateinit var database: MobileSecurityDatabase
 
@@ -60,7 +81,7 @@ internal class Services private constructor(){
         scheduleJob.scheduleJob(this.appContext, this.appActivity)
     }
 
-    internal fun recievedBatteryInformation(batteryData:HashMap<String, Any>){
+    internal fun recievedBatteryInformation(batteryData: HashMap<String, Any>) {
         this.batterInfo = batteryData
     }
 
@@ -69,30 +90,33 @@ internal class Services private constructor(){
         if (context != null) this.appContext = context
         if (activity != null) this.appContext = activity
 
-        this.appActivity.registerReceiver(BatteryReciever(), IntentFilter(Intent.ACTION_BATTERY_CHANGED))
+        batteryReciever = BatteryReciever()
+        this.appActivity.registerReceiver(batteryReciever, IntentFilter(Intent.ACTION_BATTERY_CHANGED))
 
         logger = Logger(this.appContext)
 
-        if (this.startTime != null){
+        if (this.startTime != null) {
             val difference = Date().time - startTime!!.time
 
-            if (difference > 10*60*60*1000){
-                if (isProcessStarted == true){
-                    if (difference > lockDuration){
+            if (difference > triggerDuration) {
+                if (isProcessStarted) {
+                    if (difference > lockDuration) {
                         logger.log("new trigger is happening after 10 mins")
                         this.startServices()
                     }
-                }
-                else{
+                } else {
                     logger.log("new trigger is happening after 10 mins")
                     this.startServices()
                 }
+            } else {
+                if (isProcessStarted){
+                    logger.log("older trigger is still processing")
+                }
+                else{
+                    logger.log("older trigger happens in less than trigger duration : $difference/1000 secs ago")
+                }
             }
-            else{
-                logger.log("older trigger is still processing")
-            }
-        }
-        else{
+        } else {
             logger.log("new trigger is happening after 10 mins")
             logger.log("first capture")
             this.startServices()
@@ -100,16 +124,16 @@ internal class Services private constructor(){
 
     }
 
-    fun endJob(module: MODULE, value:Any){
+    fun endJob(module: MODULE, value: Any) {
 
         logger = Logger(this.appContext)
-        if (module == MODULE.LOCATION){
-            var userLocation = value as UserLocation
-            var deviceInfo = DeviceInfo().payload()
+        if (module == MODULE.LOCATION) {
+            val userLocation = value as UserLocation
+            val deviceInfo = DeviceInfo().payload()
 
             endTime = Date()
 
-            val hashMap = hashMapOf<String, Any>(
+            val hashMap = hashMapOf(
                     "location" to userLocation,
                     "deviceInfo" to deviceInfo,
                     "batterInfo" to batterInfo,
@@ -122,26 +146,28 @@ internal class Services private constructor(){
             logger.log("process is completed : $response")
 
             runBlocking {
-                launch(Dispatchers.Default){
+                launch(Dispatchers.Default) {
                     val logTime = Date().time
                     val cipher: Cipher = Utils.generateCipher(logTime)
                     val sealedObject = SealedObject(response, cipher)
 
 
                     val byteArray = Utils.sealedObjectStream(sealedObject)
-                    if (byteArray != null)  {
+                    if (byteArray != null) {
                         database = MobileSecurityDatabase.getInstance(appContext)
                         val userData = UserData(logTime, byteArray)
                         database.userDao().insertUserData(userData)
                     }
                 }
             }
+            isProcessStarted = false
             this.scheduleJob(this.appContext, this.appActivity)
         }
+        this.appActivity.unregisterReceiver(batteryReciever)
     }
 
 
-    private fun startServices(){
+    private fun startServices() {
         startTime = Date()
         userLocationManager = null
         userLocationManager = UserLocationManager()
@@ -150,12 +176,16 @@ internal class Services private constructor(){
         isProcessStarted = true
     }
 
+
+
     private object Holder {
-        val instance = Services()
+        val instance = MSServices()
     }
 
     companion object {
-        val sharedInstance: Services by lazy { Holder.instance }
+        val sharedInstance: MSServices by lazy { Holder.instance }
+        const val lockDuration = 15 * 60 * 60 * 1000
+        const val triggerDuration = 10 * 60 * 60 * 1000
     }
 
 

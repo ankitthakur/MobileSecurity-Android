@@ -9,23 +9,17 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.net.ConnectivityManager
-import android.net.LinkProperties
-import android.net.Network
-import android.net.NetworkCapabilities
-import android.net.wifi.WifiManager
+import android.os.Build
 import android.support.v4.app.ActivityCompat
+import android.support.v4.content.ContextCompat
+import android.text.format.DateUtils
 import android.thakur.com.mobilesecurity.loggerUtil.Logger
-import android.thakur.com.mobilesecurity.services.backgroundservices.BackgroundService
-import android.thakur.com.mobilesecurity.services.backgroundservices.EVENT_TYPE
+import android.thakur.com.mobilesecurity.services.EVENTTYPE
 import android.thakur.com.mobilesecurity.services.backgroundservices.LocationBackgroundService
-import com.google.android.gms.location.FusedLocationProviderClient
-import kotlinx.coroutines.experimental.channels.actor
 import kotlinx.coroutines.experimental.runBlocking
 
 internal class ScheduleJob {
 
-    private val networkJobService:NetworkJobService = NetworkJobService()
     private lateinit var logger: Logger
     private lateinit var appContext: Context
     private lateinit var appActivity: Activity
@@ -45,28 +39,27 @@ internal class ScheduleJob {
             startLocationPermissionRequest()
         }
 
-        scheduleJob(this.appContext, event = EVENT_TYPE.SCHEDULED)
-        scheduleJob(this.appContext, event = EVENT_TYPE.NETWORK_CHANGE)
+        this.scheduleJob(this.appContext, EVENTTYPE.SCHEDULED)
+        this.scheduleJob(this.appContext, EVENTTYPE.NETWORK_CHANGE)
     }
 
-    private fun scheduleJob(context: Context, event:EVENT_TYPE) {
-        val component: ComponentName;
-        if (event == EVENT_TYPE.NETWORK_CHANGE)
+    private fun scheduleJob(context: Context, event:EVENTTYPE) {
+        val component: ComponentName = if (event == EVENTTYPE.NETWORK_CHANGE)
         {
-            component = ComponentName(context, NetworkJobService::class.java)
+            ComponentName(context, NetworkJobService::class.java)
         }
         else{
-            component = ComponentName(context, JobSchedulerService::class.java)
+            ComponentName(context, JobSchedulerService::class.java)
         }
 
         val info: JobInfo = JobInfo.Builder(event.value, component)
                 .setRequiresCharging(true)
                 .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
                 .setPersisted(true)
-                .setPeriodic(JobInfo.DEFAULT_INITIAL_BACKOFF_MILLIS)
+                .setOverrideDeadline(DateUtils.HOUR_IN_MILLIS/6)
                 .build()
 
-        var scheduler: JobScheduler = context.getSystemService(JobService.JOB_SCHEDULER_SERVICE) as JobScheduler
+        val scheduler: JobScheduler = context.getSystemService(JobService.JOB_SCHEDULER_SERVICE) as JobScheduler
         val resultCode = scheduler.schedule(info)
         if (resultCode == JobScheduler.RESULT_SUCCESS) {
             logger.log("scheduled success ")
@@ -77,10 +70,15 @@ internal class ScheduleJob {
     private fun startLocationService(context: Context) {
 
         val intent = Intent(context, LocationBackgroundService::class.java)
-        intent.putExtra("eventType", EVENT_TYPE.LOCATION_CHANGE.value)
+        intent.putExtra("eventType", EVENTTYPE.LOCATION_CHANGE.value)
 
         // this will call BackgroundService onHandle fun
-        context.startService(intent)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            ContextCompat.startForegroundService(context,intent)
+        }
+        else{
+            context.startService(intent)
+        }
     }
 
     private fun checkPermissions(obj:Context) : Boolean{
@@ -102,7 +100,6 @@ internal class ScheduleJob {
         }
     }
 
-    companion object {
-        const val REQUEST_PERMISSIONS_REQUEST_CODE = 101
-    }
 }
+
+const val REQUEST_PERMISSIONS_REQUEST_CODE = 101

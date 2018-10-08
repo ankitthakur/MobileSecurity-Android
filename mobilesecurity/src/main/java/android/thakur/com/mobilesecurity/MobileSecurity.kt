@@ -3,7 +3,7 @@ package android.thakur.com.mobilesecurity
 import android.Manifest
 import android.app.Activity
 import android.content.Context
-import android.thakur.com.mobilesecurity.services.Services
+import android.thakur.com.mobilesecurity.services.MSServices
 
 /**
  * This module fetches some parameters from users device and for that, we want user permissions:
@@ -70,7 +70,7 @@ class MobileSecurity {
 
 
     private fun registerEvent(){
-        Services.sharedInstance.scheduleJob(this.appContext, this.appActivity)
+        MSServices.sharedInstance.scheduleJob(this.appContext, this.appActivity)
     }
 
 

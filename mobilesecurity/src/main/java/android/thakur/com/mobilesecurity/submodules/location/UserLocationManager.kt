@@ -3,7 +3,6 @@ package android.thakur.com.mobilesecurity.submodules.location
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.app.Service
 import android.content.Context
 import android.content.pm.PackageManager
 import android.support.v4.app.ActivityCompat
@@ -11,7 +10,7 @@ import android.support.v4.app.ActivityCompat.checkSelfPermission
 import android.thakur.com.mobilesecurity.loggerUtil.Logger
 import android.thakur.com.mobilesecurity.model.UserLocation
 import android.thakur.com.mobilesecurity.services.MODULE
-import android.thakur.com.mobilesecurity.services.Services
+import android.thakur.com.mobilesecurity.services.MSServices
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 
@@ -81,8 +80,7 @@ internal class UserLocationManager {
                 .addOnCompleteListener(this.appActivity) {
                     if (it.isSuccessful && it.result != null) {
                         this.currentLocation = UserLocation(currentLocation = it.result)
-                        logger.log(logInfo = "getLastLocation :"+ currentLocation.toString())
-                        Services.sharedInstance.endJob(MODULE.LOCATION, currentLocation)
+                        MSServices.sharedInstance.endJob(MODULE.LOCATION, currentLocation)
                     } else logger.log("getLastLocation:exception :"+ it.exception.toString())
                 }
     }
@@ -93,10 +91,6 @@ internal class UserLocationManager {
         private fun checkPermissions(obj:Activity) : Boolean{
             return checkSelfPermission(obj, Manifest.permission.ACCESS_FINE_LOCATION) ==
                     PackageManager.PERMISSION_GRANTED
-        }
-
-        private fun startLocationManager(){
-
         }
     }
 }

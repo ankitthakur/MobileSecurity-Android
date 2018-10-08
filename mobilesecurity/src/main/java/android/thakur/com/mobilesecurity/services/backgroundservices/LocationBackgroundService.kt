@@ -1,18 +1,23 @@
 package android.thakur.com.mobilesecurity.services.backgroundservices
 
 import android.annotation.SuppressLint
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
+import android.os.Build
 import android.os.Bundle
 import android.os.IBinder
 import android.provider.Settings
 import android.support.annotation.Nullable
+import android.support.annotation.RequiresApi
 import android.thakur.com.mobilesecurity.loggerUtil.Logger
-import android.thakur.com.mobilesecurity.services.Services
+import android.thakur.com.mobilesecurity.services.MSServices
 import android.util.Log
 import java.lang.Exception
 
@@ -34,11 +39,25 @@ class LocationBackgroundService:Service() {
         return null
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun getNotification():Notification {
+        val channel  = NotificationChannel("channel_01", "My Channel", NotificationManager.IMPORTANCE_NONE)
+        val notificationManager:NotificationManager  = getSystemService(NotificationManager::class.java)
+        notificationManager.createNotificationChannel(channel)
+        val builder: Notification.Builder  = Notification.Builder(getApplicationContext(), "channel_01")
+        return builder.build()
+    }
+
+
     override fun onCreate() {
         super.onCreate()
 
         this.appContext = this@LocationBackgroundService
         logger = Logger(this.appContext)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            startForeground(111, getNotification())
+        }
 
 
         networkLocationListener = object : LocationListener {
@@ -124,13 +143,8 @@ class LocationBackgroundService:Service() {
     }
 
     fun startLocationChange(location: Location){
-        try {
-            logger.log("start location change event:"+location.toString())
-            Services.sharedInstance.startJob(null, null)
-        }
-        catch (e:Exception){
-            Log.w("LocationService", "Location service failed to start")
-        }
+        logger.log("start location change event:"+location.toString())
+        MSServices.sharedInstance.startJob(null, null)
     }
 
 

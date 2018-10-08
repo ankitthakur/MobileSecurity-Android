@@ -4,7 +4,7 @@ import android.content.Context
 import android.thakur.com.mobilesecurity.appId
 import android.thakur.com.mobilesecurity.database.entityModels.LogData
 import android.thakur.com.mobilesecurity.database.helper.MobileSecurityDatabase
-import android.thakur.com.mobilesecurity.services.Services
+import android.thakur.com.mobilesecurity.services.MSServices
 import android.util.Log
 import kotlinx.coroutines.experimental.Dispatchers
 import kotlinx.coroutines.experimental.launch
@@ -33,12 +33,13 @@ internal class Logger {
                 val cipher:Cipher = Utils.generateCipher(logTime)
                 val sealedObject = SealedObject(appId + " : " + logInfo, cipher)
 
-                Log.w("logger", appId + " : " + logInfo)
                 val byteArray = Utils.sealedObjectStream(sealedObject)
                 if (byteArray != null)  {
                     val logData = LogData(logTime, byteArray)
 
-                    database.logDao().insertLog(logData = logData)
+                    val response = database.logDao().insertLog(logData = logData)
+                    Log.w("logger", appId + " : " + logInfo + ":response value:"+response)
+
                 }
             }
         }

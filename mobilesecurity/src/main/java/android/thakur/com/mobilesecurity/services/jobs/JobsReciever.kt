@@ -6,9 +6,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.thakur.com.mobilesecurity.loggerUtil.Logger
-import android.thakur.com.mobilesecurity.services.Services
-import android.thakur.com.mobilesecurity.services.backgroundservices.BackgroundService
-import android.thakur.com.mobilesecurity.services.backgroundservices.EVENT_TYPE
+import android.thakur.com.mobilesecurity.services.MSServices
 
 internal class JobsReciever:BroadcastReceiver() {
 
@@ -16,13 +14,11 @@ internal class JobsReciever:BroadcastReceiver() {
 
     override fun onReceive(context: Context?, intent: Intent?) {
 
-        if ("android.intent.action.BOOT_COMPLETED".equals(intent?.getAction())) {
+        if (intent?.action == "android.intent.action.BOOT_COMPLETED") {
             logger = Logger(context!!)
             logger.log("recieved broadcast")
-            val intent = Intent(context, BackgroundService::class.java)
-            intent.putExtra("eventType", EVENT_TYPE.REBOOTED.value)
             // this will call BackgroundService onHandle fun
-            Services.sharedInstance.scheduleJob(context!!, null)
+            MSServices.sharedInstance.startJob(context, null)
         }
 
     }
